@@ -247,4 +247,15 @@ import { LitElement, html, css } from 'lit';
     }
   }
   
-  customElements.define("vpd-gauge-card-editor", VpdGaugeCardEditor);
+  // ======================================================================
+// == Editor Definition & Registration                                 ==
+// ======================================================================
+
+// Define the custom element for the editor, ensuring it's only defined once
+if (!customElements.get('vpd-gauge-card-editor')) {
+    customElements.define('vpd-gauge-card-editor', VpdGaugeCardEditor);
+    // Optional: Add a console log for editor registration if needed for debugging
+    // console.info('VPD Gauge Card Editor defined.');
+} else {
+     console.warn("Attempted to redefine vpd-gauge-card-editor. Skipping.");
+}
