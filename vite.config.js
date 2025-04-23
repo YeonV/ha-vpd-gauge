@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     // Library mode configuration
     lib: {
-      entry: 'src/vpd-gauge-card.js', // Path to your main card source file
+      entry: 'src/vpd-gauge.js', // Path to your main card source file
       name: 'VpdGaugeCard', // Global variable name (if needed, less relevant for modules)
       // Output formats: 'es' (ES Module) is essential for Lovelace
       // 'umd' can be useful for broader compatibility if needed, but 'es' is primary
