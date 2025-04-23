@@ -1,6 +1,6 @@
 {
   "name": "ha-vpd-gauge",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Home Assistant Lovelace card for VPD Gauge with dynamic thresholds",
   "main": "dist/vpd-gauge-card.js",
   "scripts": {
