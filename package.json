@@ -1,0 +1,25 @@
+{
+  "name": "ha-vpd-gauge",
+  "version": "0.0.1",
+  "description": "Home Assistant Lovelace card for VPD Gauge with dynamic thresholds",
+  "main": "dist/vpd-gauge-card.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "card",
+    "vpd",
+    "gauge"
+  ],
+  "author": "YeonV (Blade)",
+  "license": "MIT",
+  "devDependencies": {
+    "lit": "^3.3.0",
+    "vite": "^6.3.2"
+  }
+}

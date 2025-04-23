@@ -1,0 +1,118 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main # Or your default branch
+
+jobs:
+  release:
+    # Only run this job if the commit message on main starts with 'Release' (case-insensitive check added)
+    if: |
+      startsWith(github.event.head_commit.message, 'Release') ||
+      startsWith(github.event.head_commit.message, 'release')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to create releases and tags
+      # Optional: Add pull-requests: read or issues: read if your changelog links to them
+    concurrency: # Prevent multiple simultaneous release runs
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to fetch all history for tags and commit messages
+
+      - name: Determine Bump Type
+        id: bump_type
+        run: |
+          commit_message="${{ github.event.head_commit.message }}"
+          bump="patch" # Default bump type
+          if [[ "$commit_message" =~ ^Release[[:space:]]+Major || "$commit_message" =~ ^release[[:space:]]+major ]]; then
+            bump="major"
+          elif [[ "$commit_message" =~ ^Release[[:space:]]+Minor || "$commit_message" =~ ^release[[:space:]]+minor ]]; then
+            bump="minor"
+          fi
+          echo "Determined bump type: $bump"
+          echo "bump_level=$bump" >> $GITHUB_OUTPUT
+
+      - name: Get Latest Tag and Calculate Next Version
+        id: versioning
+        run: |
+          set -e # Exit immediately if a command exits with a non-zero status.
+          # Fetch all tags from remote
+          git fetch --tags --force
+          # Get the latest tag that looks like a semantic version (vX.Y.Z)
+          latest_tag=$(git tag -l --sort=-v:refname 'v[0-9]*.[0-9]*.[0-9]*' | head -n 1)
+
+          if [[ -z "$latest_tag" ]]; then
+            echo "No previous tag found. Starting with v0.0.1."
+            # If no tags, check bump level. Major/Minor should probably start at 1.0.0 or 0.1.0
+            if [[ "${{ steps.bump_type.outputs.bump_level }}" == "major" ]]; then
+              new_version="v1.0.0"
+            elif [[ "${{ steps.bump_type.outputs.bump_level }}" == "minor" ]]; then
+              new_version="v0.1.0"
+            else # patch
+              new_version="v0.0.1"
+            fi
+            previous_tag="" # No previous tag for changelog
+          else
+            echo "Latest tag found: $latest_tag"
+            # Remove 'v' prefix for calculations
+            version_core=$(echo $latest_tag | sed 's/^v//')
+            # Split into major, minor, patch
+            major=$(echo $version_core | cut -d. -f1)
+            minor=$(echo $version_core | cut -d. -f2)
+            patch=$(echo $version_core | cut -d. -f3)
+
+            # Bump version based on determined level
+            bump_level="${{ steps.bump_type.outputs.bump_level }}"
+            if [[ "$bump_level" == "major" ]]; then
+              major=$((major + 1))
+              minor=0
+              patch=0
+            elif [[ "$bump_level" == "minor" ]]; then
+              minor=$((minor + 1))
+              patch=0
+            else # patch
+              patch=$((patch + 1))
+            fi
+            new_version="v${major}.${minor}.${patch}"
+            previous_tag="$latest_tag" # Use the found tag for changelog
+          fi
+
+          echo "Previous tag: $previous_tag"
+          echo "New version: $new_version"
+          # Set outputs for subsequent steps
+          echo "new_tag=$new_version" >> $GITHUB_OUTPUT
+          echo "previous_tag=$previous_tag" >> $GITHUB_OUTPUT
+
+      - name: Generate Changelog Content
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.3.1
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          head-ref: ${{ github.sha }}
+          base-ref: "${{ steps.versioning.outputs.previous_tag }}"
+          fetch: true
+
+      - name: Write Changelog to File
+        id: write_changelog
+        run: |
+          echo "${{ steps.changelog.outputs.changelog }}" > CHANGELOG.md
+          echo "Changelog written to CHANGELOG.md"
+          # Optional: Cat the file to see its content in logs
+          cat CHANGELOG.md
+          
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.versioning.outputs.new_tag }}
+          release_name: "Release ${{ steps.versioning.outputs.new_tag }}"
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
