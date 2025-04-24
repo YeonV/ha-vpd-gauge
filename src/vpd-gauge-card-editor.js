@@ -123,29 +123,27 @@ class VpdGaugeCardEditor extends LitElement {
     _valueChanged = (ev) => {
         if (!this._config) return;
         const target = ev.target;
+        // --- Read from dataset ---
         const configKey = target.dataset.configValue;
+        // -------------------------
         let value = target.value;
         if (!configKey) { console.warn("No configValue dataset found for target:", target); return; }
-
-        // Handle specific types
+        // ... (rest of handler remains the same) ...
         if (target.type === "number") { value = value === "" ? undefined : parseFloat(value); }
         else if (target.tagName === 'HA-ENTITY-PICKER' && ev.detail?.value !== undefined) { value = ev.detail.value; }
-        // No switch handling needed
-
         const newConfig = { ...this._config };
-        if (value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) {
-            if (configKey !== CONF_ENTITY && configKey !== CONF_MIN_ENTITY && configKey !== CONF_MAX_ENTITY) { delete newConfig[configKey]; }
-            else { newConfig[configKey] = ""; }
-        } else { newConfig[configKey] = value; }
+        if (value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) { if (configKey !== CONF_ENTITY && configKey !== CONF_MIN_ENTITY && configKey !== CONF_MAX_ENTITY) { delete newConfig[configKey]; } else { newConfig[configKey] = ""; } } else { newConfig[configKey] = value; }
         this._config = newConfig;
         this.fireConfigChanged();
     }
-
+    
     _colorChanged = (ev) => {
         if (!this._config) return;
         const target = ev.target;
+        // --- Read from dataset ---
         const configKey = target.dataset.configValue;
-        const value = ev.detail.value; // ha-color-picker uses event.detail.value
+        // -------------------------
+        const value = ev.detail.value;
         if (!configKey) { console.warn("No configValue dataset found for color picker:", target); return; }
         console.log(`[Editor] Color Changed: Key=${configKey}, Value=${value}`);
         const newConfig = { ...this._config };
@@ -162,57 +160,130 @@ class VpdGaugeCardEditor extends LitElement {
     }
 
     render() {
-      if (!this._hass) return html`Waiting for hass...`;
-      if (!this._config) return html`Waiting for config...`;
-
-      // Define values for binding, remove needle
-      const name = this._config[CONF_NAME] || "";
-      const entity = this._config[CONF_ENTITY] || "";
-      const minEntity = this._config[CONF_MIN_ENTITY] || "";
-      const maxEntity = this._config[CONF_MAX_ENTITY] || "";
-      const gaugeMin = this._config[CONF_GAUGE_MIN] ?? DEFAULT_GAUGE_MIN;
-      const gaugeMax = this._config[CONF_GAUGE_MAX] ?? DEFAULT_GAUGE_MAX;
-      const staticLow = this._config[CONF_STATIC_LOW_THRESHOLD] ?? DEFAULT_STATIC_LOW_THRESHOLD;
-      const staticHigh = this._config[CONF_STATIC_HIGH_THRESHOLD] ?? DEFAULT_STATIC_HIGH_THRESHOLD;
-      const colorExtremeLow = this._config[CONF_COLOR_EXTREME_LOW] || DEFAULT_COLOR_EXTREME_LOW;
-      const colorLow = this._config[CONF_COLOR_LOW] || DEFAULT_COLOR_LOW;
-      const colorGood = this._config[CONF_COLOR_GOOD] || DEFAULT_COLOR_GOOD;
-      const colorHigh = this._config[CONF_COLOR_HIGH] || DEFAULT_COLOR_HIGH;
-      const colorExtremeHigh = this._config[CONF_COLOR_EXTREME_HIGH] || DEFAULT_COLOR_EXTREME_HIGH;
-
-      // Render using Color Pickers
-      return html`
-        <div class="card-config">
-          <h3>Required Entities</h3>
-          <ha-entity-picker label="VPD Sensor Entity" .hass=${this._hass} .value=${entity} .dataset=${{ configValue: CONF_ENTITY }} @value-changed=${this._valueChanged} allow-custom-entity required id="entity"></ha-entity-picker>
-          <ha-entity-picker label="Min Threshold Entity (Number)" .hass=${this._hass} .value=${minEntity} .dataset=${{ configValue: CONF_MIN_ENTITY }} @value-changed=${this._valueChanged} .includeDomains=${["number"]} allow-custom-entity required id="min_entity"></ha-entity-picker>
-          <ha-entity-picker label="Max Threshold Entity (Number)" .hass=${this._hass} .value=${maxEntity} .dataset=${{ configValue: CONF_MAX_ENTITY }} @value-changed=${this._valueChanged} .includeDomains=${["number"]} allow-custom-entity required id="max_entity"></ha-entity-picker>
-
-          <h3>Appearance</h3>
-          <ha-textfield label="Name (Optional)" .value=${name} .dataset=${{ configValue: CONF_NAME }} @input=${this._valueChanged} id="name"></ha-textfield>
-          <!-- Needle Switch Removed -->
-
-          <h3>Gauge Range & Static Thresholds</h3>
-          <div class="side-by-side">
-              <ha-textfield label="Gauge Min Value" type="number" .value=${gaugeMin} .dataset=${{ configValue: CONF_GAUGE_MIN }} @input=${this._valueChanged} step="0.01" id="gauge_min"></ha-textfield>
-              <ha-textfield label="Gauge Max Value" type="number" .value=${gaugeMax} .dataset=${{ configValue: CONF_GAUGE_MAX }} @input=${this._valueChanged} step="0.01" id="gauge_max"></ha-textfield>
+        if (!this._hass) return html`Waiting for hass...`;
+        if (!this._config) return html`Waiting for config...`;
+    
+        // Define values for binding
+        const name = this._config[CONF_NAME] || "";
+        const entity = this._config[CONF_ENTITY] || "";
+        const minEntity = this._config[CONF_MIN_ENTITY] || "";
+        const maxEntity = this._config[CONF_MAX_ENTITY] || "";
+        const gaugeMin = this._config[CONF_GAUGE_MIN] ?? DEFAULT_GAUGE_MIN;
+        const gaugeMax = this._config[CONF_GAUGE_MAX] ?? DEFAULT_GAUGE_MAX;
+        const staticLow = this._config[CONF_STATIC_LOW_THRESHOLD] ?? DEFAULT_STATIC_LOW_THRESHOLD;
+        const staticHigh = this._config[CONF_STATIC_HIGH_THRESHOLD] ?? DEFAULT_STATIC_HIGH_THRESHOLD;
+        const colorExtremeLow = this._config[CONF_COLOR_EXTREME_LOW] || DEFAULT_COLOR_EXTREME_LOW;
+        const colorLow = this._config[CONF_COLOR_LOW] || DEFAULT_COLOR_LOW;
+        const colorGood = this._config[CONF_COLOR_GOOD] || DEFAULT_COLOR_GOOD;
+        const colorHigh = this._config[CONF_COLOR_HIGH] || DEFAULT_COLOR_HIGH;
+        const colorExtremeHigh = this._config[CONF_COLOR_EXTREME_HIGH] || DEFAULT_COLOR_EXTREME_HIGH;
+    
+        return html`
+          <div class="card-config">
+            <h3>Required Entities</h3>
+            <ha-entity-picker
+              label="VPD Sensor Entity"
+              .hass=${this._hass}
+              .value=${entity}
+              data-config-value=${CONF_ENTITY} <!-- Set data- attribute -->
+              @value-changed=${this._valueChanged}
+              allow-custom-entity
+              required
+              id="entity"
+            ></ha-entity-picker>
+            <ha-entity-picker
+              label="Min Threshold Entity (Number)"
+              .hass=${this._hass}
+              .value=${minEntity}
+              data-config-value=${CONF_MIN_ENTITY} <!-- Set data- attribute -->
+              @value-changed=${this._valueChanged}
+              .includeDomains=${["number"]}
+              allow-custom-entity
+              required
+              id="min_entity"
+            ></ha-entity-picker>
+            <ha-entity-picker
+              label="Max Threshold Entity (Number)"
+              .hass=${this._hass}
+              .value=${maxEntity}
+              data-config-value=${CONF_MAX_ENTITY} <!-- Set data- attribute -->
+              @value-changed=${this._valueChanged}
+              .includeDomains=${["number"]}
+              allow-custom-entity
+              required
+              id="max_entity"
+            ></ha-entity-picker>
+    
+            <h3>Appearance</h3>
+            <ha-textfield
+              label="Name (Optional)"
+              .value=${name}
+              data-config-value=${CONF_NAME} <!-- Set data- attribute -->
+              @input=${this._valueChanged}
+              id="name"
+            ></ha-textfield>
+            <!-- Needle Removed -->
+    
+            <h3>Gauge Range & Static Thresholds</h3>
+            <div class="side-by-side">
+                <ha-textfield
+                    label="Gauge Min Value" type="number" .value=${gaugeMin}
+                    data-config-value=${CONF_GAUGE_MIN} <!-- Set data- attribute -->
+                    @input=${this._valueChanged} step="0.01" id="gauge_min"
+                ></ha-textfield>
+                <ha-textfield
+                    label="Gauge Max Value" type="number" .value=${gaugeMax}
+                    data-config-value=${CONF_GAUGE_MAX} <!-- Set data- attribute -->
+                    @input=${this._valueChanged} step="0.01" id="gauge_max"
+                ></ha-textfield>
+            </div>
+             <div class="side-by-side">
+                <ha-textfield
+                    label="Static Low Threshold" type="number" .value=${staticLow}
+                    data-config-value=${CONF_STATIC_LOW_THRESHOLD} <!-- Set data- attribute -->
+                    @input=${this._valueChanged} step="0.01"
+                    title="Segment color changes from Extreme Low to Low at this value" id="static_low_threshold"
+                ></ha-textfield>
+                <ha-textfield
+                    label="Static High Threshold" type="number" .value=${staticHigh}
+                    data-config-value=${CONF_STATIC_HIGH_THRESHOLD} <!-- Set data- attribute -->
+                    @input=${this._valueChanged} step="0.01"
+                    title="Segment color changes from High to Extreme High at this value" id="static_high_threshold"
+                ></ha-textfield>
+            </div>
+    
+             <h3>Segment Colors</h3>
+             <div class="color-grid">
+                <label>Extreme Low:</label>
+                <ha-color-picker .value=${colorExtremeLow}
+                  data-config-value=${CONF_COLOR_EXTREME_LOW} <!-- Set data- attribute -->
+                  @color-changed=${this._colorChanged} id="extreme_low_picker"
+                ></ha-color-picker>
+                <label>Low:</label>
+                <ha-color-picker .value=${colorLow}
+                  data-config-value=${CONF_COLOR_LOW} <!-- Set data- attribute -->
+                  @color-changed=${this._colorChanged} id="low_picker"
+                ></ha-color-picker>
+                <label>Good:</label>
+                <ha-color-picker .value=${colorGood}
+                  data-config-value=${CONF_COLOR_GOOD} <!-- Set data- attribute -->
+                  @color-changed=${this._colorChanged} id="good_picker"
+                ></ha-color-picker>
+                <label>High:</label>
+                <ha-color-picker .value=${colorHigh}
+                  data-config-value=${CONF_COLOR_HIGH} <!-- Set data- attribute -->
+                  @color-changed=${this._colorChanged} id="high_picker"
+                ></ha-color-picker>
+                <label>Extreme High:</label>
+                <ha-color-picker .value=${colorExtremeHigh}
+                  data-config-value=${CONF_COLOR_EXTREME_HIGH} <!-- Set data- attribute -->
+                  @color-changed=${this._colorChanged} id="extreme_high_picker"
+                ></ha-color-picker>
+             </div>
           </div>
-           <div class="side-by-side">
-              <ha-textfield label="Static Low Threshold" type="number" .value=${staticLow} .dataset=${{ configValue: CONF_STATIC_LOW_THRESHOLD }} @input=${this._valueChanged} step="0.01" title="Segment color changes from Extreme Low to Low at this value" id="static_low_threshold"></ha-textfield>
-              <ha-textfield label="Static High Threshold" type="number" .value=${staticHigh} .dataset=${{ configValue: CONF_STATIC_HIGH_THRESHOLD }} @input=${this._valueChanged} step="0.01" title="Segment color changes from High to Extreme High at this value" id="static_high_threshold"></ha-textfield>
-          </div>
-
-           <h3>Segment Colors</h3>
-           <div class="color-grid">
-              <label>Extreme Low:</label> <ha-color-picker .value=${colorExtremeLow} .dataset=${{ configValue: CONF_COLOR_EXTREME_LOW }} @color-changed=${this._colorChanged} id="extreme_low_picker"></ha-color-picker>
-              <label>Low:</label> <ha-color-picker .value=${colorLow} .dataset=${{ configValue: CONF_COLOR_LOW }} @color-changed=${this._colorChanged} id="low_picker"></ha-color-picker>
-              <label>Good:</label> <ha-color-picker .value=${colorGood} .dataset=${{ configValue: CONF_COLOR_GOOD }} @color-changed=${this._colorChanged} id="good_picker"></ha-color-picker>
-              <label>High:</label> <ha-color-picker .value=${colorHigh} .dataset=${{ configValue: CONF_COLOR_HIGH }} @color-changed=${this._colorChanged} id="high_picker"></ha-color-picker>
-              <label>Extreme High:</label> <ha-color-picker .value=${colorExtremeHigh} .dataset=${{ configValue: CONF_COLOR_EXTREME_HIGH }} @color-changed=${this._colorChanged} id="extreme_high_picker"></ha-color-picker>
-           </div>
-        </div>
-      `;
+        `;
     }
+    
 
     static get styles() { /* Keep styles as before */ return css`...`; }
 }
