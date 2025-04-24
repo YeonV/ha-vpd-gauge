@@ -11,7 +11,7 @@ import "./vpd-gauge-card-editor.js";
 // Define constants for configuration keys (good practice)
 const CONF_ENTITY = "entity";
 const CONF_NAME = "name";
-const CONF_NEEDLE = "needle";
+// const CONF_NEEDLE = "needle";
 const CONF_GAUGE_MIN = "gauge_min";
 const CONF_GAUGE_MAX = "gauge_max";
 const CONF_MIN_ENTITY = "min_entity";
@@ -249,7 +249,7 @@ class VpdGaugeCard extends LitElement {
             .min=${this.config.gauge_min ?? DEFAULT_GAUGE_MIN}
             .max=${this.config.gauge_max ?? DEFAULT_GAUGE_MAX}
             .segments=${calculatedSegments}
-            ?needle=${this.config[CONF_NEEDLE] !== false}
+            ?needle=true
             style="--gauge-color: var(--primary-text-color);"
           ></ha-gauge>
         </div>
@@ -432,7 +432,7 @@ class VpdGaugeCardEditor extends LitElement {
     const entity = this._config[CONF_ENTITY] || "";
     const minEntity = this._config[CONF_MIN_ENTITY] || "";
     const maxEntity = this._config[CONF_MAX_ENTITY] || "";
-    const needle = this._config[CONF_NEEDLE] !== false; // Default true if undefined
+    // const needle = this._config[CONF_NEEDLE] !== false; // Default true if undefined
     const gaugeMin = this._config[CONF_GAUGE_MIN] ?? DEFAULT_GAUGE_MIN;
     const gaugeMax = this._config[CONF_GAUGE_MAX] ?? DEFAULT_GAUGE_MAX;
     const staticLow =
@@ -487,14 +487,6 @@ class VpdGaugeCardEditor extends LitElement {
           .configValue=${CONF_NAME}
           @input=${this._valueChanged}
         ></ha-textfield>
-        <ha-formfield label="Show Needle">
-          <ha-switch
-            .checked=${needle}
-            .dataset=${{ configValue: CONF_NEEDLE }}
-            @change=${this._valueChanged}
-            id="needle"
-          ></ha-switch>
-        </ha-formfield>
 
         <h3>Gauge Range & Static Thresholds</h3>
         <div class="side-by-side">
