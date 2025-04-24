@@ -257,7 +257,7 @@ class VpdGaugeCard extends LitElement {
     // This dynamic import helps with code splitting
     import("./vpd-gauge-card-editor.js")
       .then(() => {
-        console.log("VPD Gauge Card Editor loaded.");
+        console.log("VPD Gauge Card Editor loaded. from card");
       })
       .catch((e) => {
         console.error("Failed to load VPD Gauge Card Editor:", e);

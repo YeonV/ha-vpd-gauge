@@ -85,7 +85,7 @@ import { LitElement, html, css } from 'lit';
       if (!this.hass || !this._config) {
         return html``;
       }
-  
+      console.log("Rendering VPD Gauge Card Editor", this._config);
       // Pre-populate values for the form fields from the internal config copy
       const name = this._config[CONF_NAME] || "";
       const entity = this._config[CONF_ENTITY] || "";

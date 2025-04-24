@@ -608,6 +608,7 @@ let qt = class extends T {
     var v, p, $, E;
     if (!this.hass || !this._config)
       return C``;
+    console.log("Rendering VPD Gauge Card Editor", this._config);
     const e = this._config[Re] || "", t = this._config[Ne] || "", i = this._config[Ue] || "", s = this._config[Ve] || "", a = this._config[Me] !== !1, o = (v = this._config[De]) != null ? v : jt, l = (p = this._config[Pe]) != null ? p : zt, r = ($ = this._config[je]) != null ? $ : It, h = (E = this._config[ze]) != null ? E : Wt, d = this._config[Ge] || Ut, c = this._config[ke] || Vt, g = this._config[Fe] || Gt, f = this._config[Ie] || kt, _ = this._config[We] || Ft;
     return C`
         <div class="card-config">
@@ -882,7 +883,7 @@ class Bt extends T {
   }
   static getConfigElement() {
     return Promise.resolve().then(() => Xt).then(() => {
-      console.log("VPD Gauge Card Editor loaded.");
+      console.log("VPD Gauge Card Editor loaded. from card");
     }).catch((t) => {
       console.error("Failed to load VPD Gauge Card Editor:", t);
     }), document.createElement("vpd-gauge-card-editor");
