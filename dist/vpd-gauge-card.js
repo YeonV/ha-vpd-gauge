@@ -1,16 +1,16 @@
 var gt = Object.defineProperty, ft = Object.defineProperties;
 var _t = Object.getOwnPropertyDescriptors;
-var ye = Object.getOwnPropertySymbols;
+var Ee = Object.getOwnPropertySymbols;
 var pt = Object.prototype.hasOwnProperty, $t = Object.prototype.propertyIsEnumerable;
 var J = (n, e, t) => e in n ? gt(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, H = (n, e) => {
   for (var t in e || (e = {}))
     pt.call(e, t) && J(n, t, e[t]);
-  if (ye)
-    for (var t of ye(e))
+  if (Ee)
+    for (var t of Ee(e))
       $t.call(e, t) && J(n, t, e[t]);
   return n;
 }, K = (n, e) => ft(n, _t(e));
-var Ee = (n, e, t) => J(n, typeof e != "symbol" ? e + "" : e, t);
+var ye = (n, e, t) => J(n, typeof e != "symbol" ? e + "" : e, t);
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -58,7 +58,7 @@ const mt = (n) => new rt(typeof n == "string" ? n : n + "", void 0, ge), fe = (n
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: yt, defineProperty: Et, getOwnPropertyDescriptor: At, getOwnPropertyNames: bt, getOwnPropertySymbols: Ct, getPrototypeOf: xt } = Object, x = globalThis, Ce = x.trustedTypes, wt = Ce ? Ce.emptyScript : "", Z = x.reactiveElementPolyfillSupport, P = (n, e) => n, ie = { toAttribute(n, e) {
+const { is: Et, defineProperty: yt, getOwnPropertyDescriptor: At, getOwnPropertyNames: bt, getOwnPropertySymbols: Ct, getPrototypeOf: xt } = Object, x = globalThis, Ce = x.trustedTypes, wt = Ce ? Ce.emptyScript : "", Z = x.reactiveElementPolyfillSupport, P = (n, e) => n, ie = { toAttribute(n, e) {
   switch (e) {
     case Boolean:
       n = n ? wt : null;
@@ -86,7 +86,7 @@ const { is: yt, defineProperty: Et, getOwnPropertyDescriptor: At, getOwnProperty
       }
   }
   return t;
-} }, lt = (n, e) => !yt(n, e), xe = { attribute: !0, type: String, converter: ie, reflect: !1, useDefault: !1, hasChanged: lt };
+} }, lt = (n, e) => !Et(n, e), xe = { attribute: !0, type: String, converter: ie, reflect: !1, useDefault: !1, hasChanged: lt };
 var tt, it;
 (tt = Symbol.metadata) != null || (Symbol.metadata = Symbol("metadata")), (it = x.litPropertyMetadata) != null || (x.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let N = class extends HTMLElement {
@@ -100,7 +100,7 @@ let N = class extends HTMLElement {
   static createProperty(e, t = xe) {
     if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
       const i = Symbol(), s = this.getPropertyDescriptor(e, i, t);
-      s !== void 0 && Et(this.prototype, e, s);
+      s !== void 0 && yt(this.prototype, e, s);
     }
   }
   static getPropertyDescriptor(e, t, i) {
@@ -586,7 +586,7 @@ let qt = class extends T {
     };
   }
   setConfig(e) {
-    this._config = H({}, e);
+    console.log("Editor setConfig called with:", e), this._config = H({}, e), this._initialized && this.loadEditorValues();
   }
   // Helper function to handle changes in form elements
   _valueChanged(e) {
@@ -605,10 +605,10 @@ let qt = class extends T {
     a.detail = { config: s }, this.dispatchEvent(a);
   }
   render() {
-    var v, p, $, E;
+    var v, p, $, y;
     if (!this.hass || !this._config)
       return C``;
-    const e = this._config[Re] || "", t = this._config[Ne] || "", i = this._config[Ue] || "", s = this._config[Ve] || "", a = this._config[Me] !== !1, o = (v = this._config[De]) != null ? v : jt, l = (p = this._config[Pe]) != null ? p : zt, r = ($ = this._config[je]) != null ? $ : It, h = (E = this._config[ze]) != null ? E : Wt, d = this._config[Ge] || Ut, c = this._config[ke] || Vt, g = this._config[Fe] || Gt, f = this._config[Ie] || kt, _ = this._config[We] || Ft;
+    const e = this._config[Re] || "", t = this._config[Ne] || "", i = this._config[Ue] || "", s = this._config[Ve] || "", a = this._config[Me] !== !1, o = (v = this._config[De]) != null ? v : jt, l = (p = this._config[Pe]) != null ? p : zt, r = ($ = this._config[je]) != null ? $ : It, h = (y = this._config[ze]) != null ? y : Wt, d = this._config[Ge] || Ut, c = this._config[ke] || Vt, g = this._config[Fe] || Gt, f = this._config[Ie] || kt, _ = this._config[We] || Ft;
     return C`
         <div class="card-config">
           <h3>Required Entities</h3>
@@ -650,68 +650,87 @@ let qt = class extends T {
             @input=${this._valueChanged}
           ></ha-textfield>
           <ha-formfield label="Show Needle">
-              <ha-switch
+            <ha-switch
               .checked=${a}
               .configValue=${Me}
               @change=${this._valueChanged}
-              ></ha-switch>
+            ></ha-switch>
           </ha-formfield>
   
           <h3>Gauge Range & Static Thresholds</h3>
           <div class="side-by-side">
-              <ha-textfield
-                  label="Gauge Min Value"
-                  type="number"
-                  .value=${o}
-                  .configValue=${De}
-                  @input=${this._valueChanged}
-                  step="0.01"
-              ></ha-textfield>
-              <ha-textfield
-                  label="Gauge Max Value"
-                  type="number"
-                  .value=${l}
-                  .configValue=${Pe}
-                  @input=${this._valueChanged}
-                  step="0.01"
-              ></ha-textfield>
+            <ha-textfield
+              label="Gauge Min Value"
+              type="number"
+              .value=${o}
+              .configValue=${De}
+              @input=${this._valueChanged}
+              step="0.01"
+            ></ha-textfield>
+            <ha-textfield
+              label="Gauge Max Value"
+              type="number"
+              .value=${l}
+              .configValue=${Pe}
+              @input=${this._valueChanged}
+              step="0.01"
+            ></ha-textfield>
           </div>
-           <div class="side-by-side">
-              <ha-textfield
-                  label="Static Low Threshold"
-                  type="number"
-                  .value=${r}
-                  .configValue=${je}
-                  @input=${this._valueChanged}
-                  step="0.01"
-                  title="Segment color changes from Extreme Low to Low at this value"
-              ></ha-textfield>
-              <ha-textfield
-                  label="Static High Threshold"
-                  type="number"
-                  .value=${h}
-                  .configValue=${ze}
-                  @input=${this._valueChanged}
-                  step="0.01"
-                  title="Segment color changes from High to Extreme High at this value"
-              ></ha-textfield>
+          <div class="side-by-side">
+            <ha-textfield
+              label="Static Low Threshold"
+              type="number"
+              .value=${r}
+              .configValue=${je}
+              @input=${this._valueChanged}
+              step="0.01"
+              title="Segment color changes from Extreme Low to Low at this value"
+            ></ha-textfield>
+            <ha-textfield
+              label="Static High Threshold"
+              type="number"
+              .value=${h}
+              .configValue=${ze}
+              @input=${this._valueChanged}
+              step="0.01"
+              title="Segment color changes from High to Extreme High at this value"
+            ></ha-textfield>
           </div>
   
-           <h3>Segment Colors</h3>
-           <div class="color-grid">
-              <label>Extreme Low:</label>
-              <ha-textfield .value=${d} .configValue=${Ge} @input=${this._valueChanged}></ha-textfield>
-              <label>Low:</label>
-              <ha-textfield .value=${c} .configValue=${ke} @input=${this._valueChanged}></ha-textfield>
-              <label>Good:</label>
-              <ha-textfield .value=${g} .configValue=${Fe} @input=${this._valueChanged}></ha-textfield>
-              <label>High:</label>
-              <ha-textfield .value=${f} .configValue=${Ie} @input=${this._valueChanged}></ha-textfield>
-              <label>Extreme High:</label>
-              <ha-textfield .value=${_} .configValue=${We} @input=${this._valueChanged}></ha-textfield>
-           </div>
-           <!-- Consider using ha-color-picker for a better UX, but textfield is simpler -->
-  
+          <h3>Segment Colors</h3>
+          <div class="color-grid">
+            <label>Extreme Low:</label>
+            <ha-textfield
+              .value=${d}
+              .configValue=${Ge}
+              @input=${this._valueChanged}
+            ></ha-textfield>
+            <label>Low:</label>
+            <ha-textfield
+              .value=${c}
+              .configValue=${ke}
+              @input=${this._valueChanged}
+            ></ha-textfield>
+            <label>Good:</label>
+            <ha-textfield
+              .value=${g}
+              .configValue=${Fe}
+              @input=${this._valueChanged}
+            ></ha-textfield>
+            <label>High:</label>
+            <ha-textfield
+              .value=${f}
+              .configValue=${Ie}
+              @input=${this._valueChanged}
+            ></ha-textfield>
+            <label>Extreme High:</label>
+            <ha-textfield
+              .value=${_}
+              .configValue=${We}
+              @input=${this._valueChanged}
+            ></ha-textfield>
+          </div>
+          <!-- Consider using ha-color-picker for a better UX, but textfield is simpler -->
         </div>
       `;
   }
@@ -727,7 +746,7 @@ let qt = class extends T {
         ha-formfield {
           display: block; /* Ensure they take full width */
         }
-         ha-switch {
+        ha-switch {
           padding-top: 10px; /* Align switch better */
         }
         .side-by-side {
@@ -736,17 +755,17 @@ let qt = class extends T {
           gap: 12px;
         }
         .color-grid {
-           display: grid;
-           grid-template-columns: auto 1fr; /* Label takes auto width, input takes rest */
-           gap: 8px 12px; /* Row gap, Column gap */
-           align-items: center;
+          display: grid;
+          grid-template-columns: auto 1fr; /* Label takes auto width, input takes rest */
+          gap: 8px 12px; /* Row gap, Column gap */
+          align-items: center;
         }
         h3 {
-            margin-bottom: 0;
-            margin-top: 8px;
+          margin-bottom: 0;
+          margin-top: 8px;
         }
         label {
-            text-align: right;
+          text-align: right;
         }
       `;
   }
@@ -759,7 +778,7 @@ class Bt extends T {
   constructor() {
     super(...arguments);
     // --- Helper Method (as Arrow Function Property) ---
-    Ee(this, "_calculateSegments", () => {
+    ye(this, "_calculateSegments", () => {
       var pe, $e, me;
       const t = this.config, i = this.hass;
       if (!i || !t || !t[X] || !t[B])
@@ -775,23 +794,23 @@ class Bt extends T {
       v && !isNaN(parseFloat(v.state)) ? $ = parseFloat(v.state) : console.warn(
         `VPD Gauge: Invalid state for max_entity (${o}), using static fallback ${$}`
       );
-      const E = [
+      const y = [
         { from: s, color: h },
         { from: l, color: d },
         { from: p, color: c },
         { from: $, color: g },
         { from: r, color: f }
       ];
-      E.sort((m, W) => m.from - W.from);
-      const y = E.filter((m, W, ve) => !(m.from < s || W < ve.length - 1 && ve[W + 1].from === m.from));
-      if (y.length === 0 || y[0].from > s) {
+      y.sort((m, W) => m.from - W.from);
+      const E = y.filter((m, W, ve) => !(m.from < s || W < ve.length - 1 && ve[W + 1].from === m.from));
+      if (E.length === 0 || E[0].from > s) {
         let m = h;
-        s >= r ? m = f : s >= $ ? m = g : s >= p ? m = c : s >= l && (m = d), y.unshift({ from: s, color: m }), y.length > 1 && y[1].from === y[0].from && y.shift();
+        s >= r ? m = f : s >= $ ? m = g : s >= p ? m = c : s >= l && (m = d), E.unshift({ from: s, color: m }), E.length > 1 && E[1].from === E[0].from && E.shift();
       }
       return console.log(
         `VPD Gauge (${t.entity}): MinT=${p}, MaxT=${$}, Segments=`,
-        y
-      ), y;
+        E
+      ), E;
     });
   }
   // Properties recognized by LitElement. Changes trigger re-render.
@@ -972,10 +991,10 @@ class Yt extends T {
     a.detail = { config: s }, this.dispatchEvent(a);
   }
   render() {
-    var v, p, $, E;
+    var v, p, $, y;
     if (!this.hass || !this._config)
       return C``;
-    const e = this._config[V] || "", t = this._config[A] || "", i = this._config[X] || "", s = this._config[B] || "", a = this._config[se] !== !1, o = (v = this._config[qe]) != null ? v : z, l = (p = this._config[Xe]) != null ? p : de, r = ($ = this._config[Qe]) != null ? $ : he, h = (E = this._config[et]) != null ? E : ce, d = this._config[Be] || ne, c = this._config[Ye] || oe, g = this._config[Je] || ae, f = this._config[Ke] || re, _ = this._config[Ze] || le;
+    const e = this._config[V] || "", t = this._config[A] || "", i = this._config[X] || "", s = this._config[B] || "", a = this._config[se] !== !1, o = (v = this._config[qe]) != null ? v : z, l = (p = this._config[Xe]) != null ? p : de, r = ($ = this._config[Qe]) != null ? $ : he, h = (y = this._config[et]) != null ? y : ce, d = this._config[Be] || ne, c = this._config[Ye] || oe, g = this._config[Je] || ae, f = this._config[Ke] || re, _ = this._config[Ze] || le;
     return C`
       <div class="card-config">
         <h3>Required Entities</h3>
