@@ -359,9 +359,13 @@ class VpdGaugeCardEditor extends LitElement {
     };
   }
 
-  setConfig(config) {
-    // Store a copy of the configuration
-    this._config = { ...config }; // Create a shallow copy
+  setConfig(config) { // <<< IS THIS METHOD PRESENT AND SPELLED CORRECTLY?
+    console.log("Editor setConfig called with:", config); // Add log here
+    this._config = { ...config };
+    // Maybe call loadEditorValues explicitly if needed after first set?
+    if (this._initialized) {
+        this.loadEditorValues();
+    }
   }
 
   // Helper function to handle changes in form elements
