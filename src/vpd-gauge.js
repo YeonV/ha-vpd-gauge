@@ -11,7 +11,7 @@ import "./vpd-gauge-card-editor.js";
 // Define constants for configuration keys (good practice)
 const CONF_ENTITY = "entity";
 const CONF_NAME = "name";
-// const CONF_NEEDLE = "needle";
+const CONF_NEEDLE = "needle";
 const CONF_GAUGE_MIN = "gauge_min";
 const CONF_GAUGE_MAX = "gauge_max";
 const CONF_MIN_ENTITY = "min_entity";
@@ -58,32 +58,21 @@ class VpdGaugeCard extends LitElement {
       throw new Error("You need to define max_entity (Max Threshold Number)");
     }
 
-       // --- Explicitly define ALL defaults first ---
-       const defaults = {
-        needle: true,
-        gauge_min: DEFAULT_GAUGE_MIN,
-        gauge_max: DEFAULT_GAUGE_MAX,
-        static_low_threshold: DEFAULT_STATIC_LOW_THRESHOLD,
-        static_high_threshold: DEFAULT_STATIC_HIGH_THRESHOLD,
-        color_extreme_low: DEFAULT_COLOR_EXTREME_LOW,
-        color_low: DEFAULT_COLOR_LOW,
-        color_good: DEFAULT_COLOR_GOOD,
-        color_high: DEFAULT_COLOR_HIGH,
-        color_extreme_high: DEFAULT_COLOR_EXTREME_HIGH,
-        name: "", // Default name is empty
-      };
-      // -------------------------------------------
-  
-      // Merge user config onto defaults
-      this.config = {
-        ...defaults,
-        ...config, // User config overrides defaults
-      };
-  
-      console.log("VPD Gauge Card Config Set (with defaults applied):", this.config);
-      if (this.hass) {
-        this.requestUpdate();
-    }
+    // Store configuration
+    this.config = {
+      needle: true, // Default needle to true
+      gauge_min: DEFAULT_GAUGE_MIN,
+      gauge_max: DEFAULT_GAUGE_MAX,
+      static_low_threshold: DEFAULT_STATIC_LOW_THRESHOLD,
+      static_high_threshold: DEFAULT_STATIC_HIGH_THRESHOLD,
+      color_extreme_low: DEFAULT_COLOR_EXTREME_LOW,
+      color_low: DEFAULT_COLOR_LOW,
+      color_good: DEFAULT_COLOR_GOOD,
+      color_high: DEFAULT_COLOR_HIGH,
+      color_extreme_high: DEFAULT_COLOR_EXTREME_HIGH,
+      ...config, // Merge user config, overriding defaults
+    };
+    console.log("VPD Gauge Card Config Set:", this.config);
   }
 
   // --- Helper Method (as Arrow Function Property) ---
@@ -249,7 +238,7 @@ class VpdGaugeCard extends LitElement {
             .min=${this.config.gauge_min ?? DEFAULT_GAUGE_MIN}
             .max=${this.config.gauge_max ?? DEFAULT_GAUGE_MAX}
             .segments=${calculatedSegments}
-            ?needle=true
+            ?needle=${this.config[CONF_NEEDLE] !== false}
             style="--gauge-color: var(--primary-text-color);"
           ></ha-gauge>
         </div>
@@ -385,41 +374,29 @@ class VpdGaugeCardEditor extends LitElement {
       return;
     }
     const target = ev.target;
-    const configKey = target.dataset.configValue; // Use dataset
-    let value = target.value; // Default for textfield
+    let value = target.value;
 
-    if (!configKey) {
-      console.warn("No configValue dataset found for target:", target);
-      return;
+    // Handle specific element types
+    if (target.type === "checkbox" && target.checked !== undefined) {
+      value = target.checked;
     }
-
-    // --- Specific Handling for Switch ---
-    if (target.tagName === "HA-SWITCH") { // Check tag name
-        value = target.checked;
-        console.log(`Switch Changed: Key=${configKey}, Checked State=${value}`); // Log switch state
-    }
-    // ------------------------------------
-    else if (target.type === "number") { // Handle number fields
-        value = value === "" ? undefined : parseFloat(value);
-    }
-    // For entity pickers, the value is in ev.detail.value
-    else if (target.tagName === 'HA-ENTITY-PICKER' && ev.detail?.value !== undefined) {
-        value = ev.detail.value;
-    }
-    // For regular text inputs (like name, colors for now) target.value is fine
-
-    // Update config logic (handle undefined/empty to remove optional keys)
-    if (value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) {
-        if (configKey !== CONF_ENTITY && configKey !== CONF_MIN_ENTITY && configKey !== CONF_MAX_ENTITY) {
-             delete this._config[configKey];
-        } else {
-             this._config[configKey] = ""; // Keep required keys but empty
-        }
-    } else {
-        this._config[configKey] = value;
+    if (target.type === "number") {
+      value = parseFloat(value); // Ensure numbers are stored as numbers
     }
 
-    this.fireConfigChanged();
+    // Update the internal config copy
+    const newConfig = {
+      ...this._config,
+      [target.configValue]: value, // Use configValue attribute to link element to config key
+    };
+
+    // Fire event to notify Lovelace UI that config has changed
+    const event = new Event("config-changed", {
+      bubbles: true,
+      composed: true,
+    });
+    event.detail = { config: newConfig };
+    this.dispatchEvent(event);
   }
 
   render() {
@@ -432,7 +409,7 @@ class VpdGaugeCardEditor extends LitElement {
     const entity = this._config[CONF_ENTITY] || "";
     const minEntity = this._config[CONF_MIN_ENTITY] || "";
     const maxEntity = this._config[CONF_MAX_ENTITY] || "";
-    // const needle = this._config[CONF_NEEDLE] !== false; // Default true if undefined
+    const needle = this._config[CONF_NEEDLE] !== false; // Default true if undefined
     const gaugeMin = this._config[CONF_GAUGE_MIN] ?? DEFAULT_GAUGE_MIN;
     const gaugeMax = this._config[CONF_GAUGE_MAX] ?? DEFAULT_GAUGE_MAX;
     const staticLow =
@@ -487,6 +464,13 @@ class VpdGaugeCardEditor extends LitElement {
           .configValue=${CONF_NAME}
           @input=${this._valueChanged}
         ></ha-textfield>
+        <ha-formfield label="Show Needle">
+          <ha-switch
+            .checked=${needle}
+            .configValue=${CONF_NEEDLE}
+            @change=${this._valueChanged}
+          ></ha-switch>
+        </ha-formfield>
 
         <h3>Gauge Range & Static Thresholds</h3>
         <div class="side-by-side">
