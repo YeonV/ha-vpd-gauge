@@ -2,7 +2,7 @@
 
 import { LitElement, html, css } from "lit"; // Use direct import now
 
-import "./vpd-gauge-card-editor.js";
+// import "./vpd-gauge-card-editor.js";
 // Import the gauge element definition if needed (often loaded globally by HA)
 // If you encounter issues rendering the gauge, uncommenting or finding the correct
 // import path for ha-gauge might be necessary. Maybe try this path:
@@ -255,13 +255,13 @@ class VpdGaugeCard extends LitElement {
   static getConfigElement() {
     // Ensure the editor component is loaded before creating it
     // This dynamic import helps with code splitting
-    import("./vpd-gauge-card-editor.js")
-      .then(() => {
-        console.log("VPD Gauge Card Editor loaded. from card");
-      })
-      .catch((e) => {
-        console.error("Failed to load VPD Gauge Card Editor:", e);
-      });
+    // import("./vpd-gauge-card-editor.js")
+    //   .then(() => {
+    //     console.log("VPD Gauge Card Editor loaded. from card");
+    //   })
+    //   .catch((e) => {
+    //     console.error("Failed to load VPD Gauge Card Editor:", e);
+    //   });
     return document.createElement("vpd-gauge-card-editor");
   }
 
@@ -360,7 +360,7 @@ class VpdGaugeCardEditor extends LitElement {
   }
 
   setConfig(config) { // <<< IS THIS METHOD PRESENT AND SPELLED CORRECTLY?
-    console.log("Editor setConfig called with:", config); // Add log here
+    // console.log("Editor setConfig called with:", config); // Add log here
     this._config = { ...config };
     // Maybe call loadEditorValues explicitly if needed after first set?
     if (this._initialized) {
