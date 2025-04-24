@@ -16,7 +16,7 @@ var L = (r, e, t) => ee(r, typeof e != "symbol" ? e + "" : e, t);
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const K = globalThis, pe = K.ShadowRoot && (K.ShadyCSS === void 0 || K.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, fe = Symbol(), Ce = /* @__PURE__ */ new WeakMap();
-let je = class {
+let ze = class {
   constructor(e, t, i) {
     if (this._$cssResult$ = !0, i !== fe) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
     this.cssText = e, this.t = t;
@@ -34,13 +34,13 @@ let je = class {
     return this.cssText;
   }
 };
-const et = (r) => new je(typeof r == "string" ? r : r + "", void 0, fe), ze = (r, ...e) => {
+const et = (r) => new ze(typeof r == "string" ? r : r + "", void 0, fe), je = (r, ...e) => {
   const t = r.length === 1 ? r[0] : e.reduce((i, s, o) => i + ((n) => {
     if (n._$cssResult$ === !0) return n.cssText;
     if (typeof n == "number") return n;
     throw Error("Value passed to 'css' function must be a 'css' function result: " + n + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
   })(s) + r[o + 1], r[0]);
-  return new je(t, r, fe);
+  return new ze(t, r, fe);
 }, tt = (r, e) => {
   if (pe) r.adoptedStyleSheets = e.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
   else for (const t of e) {
@@ -301,7 +301,7 @@ N.elementStyles = [], N.shadowRootOptions = { mode: "open" }, N[G("elementProper
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const I = globalThis, X = I.trustedTypes, Se = X ? X.createPolicy("lit-html", { createHTML: (r) => r }) : void 0, Be = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, Ke = "?" + E, lt = `<${Ke}>`, S = document, q = () => S.createComment(""), j = (r) => r === null || typeof r != "object" && typeof r != "function", me = Array.isArray, ct = (r) => me(r) || typeof (r == null ? void 0 : r[Symbol.iterator]) == "function", ie = `[ 	
+const I = globalThis, X = I.trustedTypes, Se = X ? X.createPolicy("lit-html", { createHTML: (r) => r }) : void 0, Be = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, Ke = "?" + E, lt = `<${Ke}>`, S = document, q = () => S.createComment(""), z = (r) => r === null || typeof r != "object" && typeof r != "function", me = Array.isArray, ct = (r) => me(r) || typeof (r == null ? void 0 : r[Symbol.iterator]) == "function", ie = `[ 	
 \f\r]`, V = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Oe = /-->/g, Te = />/g, C = RegExp(`>|${ie}(?:([^\\s"'>=/]+)(${ie}*=${ie}*(?:[^ 	
 \f\r"'\`<>=]|("|')|))|$)`, "g"), Le = /'/g, Ne = /"/g, Xe = /^(?:script|style|textarea|title)$/i, dt = (r) => (e, ...t) => ({ _$litType$: r, strings: e, values: t }), w = dt(1), R = Symbol.for("lit-noChange"), u = Symbol.for("lit-nothing"), He = /* @__PURE__ */ new WeakMap(), b = S.createTreeWalker(S, 129);
 function Ye(r, e) {
@@ -320,13 +320,13 @@ const ut = (r, e) => {
   }
   return [Ye(r, o + (r[t] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), i];
 };
-class z {
+class j {
   constructor({ strings: e, _$litType$: t }, i) {
     let s;
     this.parts = [];
     let o = 0, n = 0;
     const l = e.length - 1, a = this.parts, [h, c] = ut(e, t);
-    if (this.el = z.createElement(h, i), b.currentNode = this.el.content, t === 2 || t === 3) {
+    if (this.el = j.createElement(h, i), b.currentNode = this.el.content, t === 2 || t === 3) {
       const d = this.el.content.firstChild;
       d.replaceWith(...d.childNodes);
     }
@@ -361,7 +361,7 @@ function M(r, e, t = r, i) {
   var n, l, a;
   if (e === R) return e;
   let s = i !== void 0 ? (n = t._$Co) == null ? void 0 : n[i] : t._$Cl;
-  const o = j(e) ? void 0 : e._$litDirective$;
+  const o = z(e) ? void 0 : e._$litDirective$;
   return (s == null ? void 0 : s.constructor) !== o && ((l = s == null ? void 0 : s._$AO) == null || l.call(s, !1), o === void 0 ? s = void 0 : (s = new o(r), s._$AT(r, t, i)), i !== void 0 ? ((a = t._$Co) != null ? a : t._$Co = [])[i] = s : t._$Cl = s), s !== void 0 && (e = M(r, s._$AS(r, e.values), s, i)), e;
 }
 class gt {
@@ -414,7 +414,7 @@ class W {
     return this._$AB;
   }
   _$AI(e, t = this) {
-    e = M(this, e, t), j(e) ? e === u || e == null || e === "" ? (this._$AH !== u && this._$AR(), this._$AH = u) : e !== this._$AH && e !== R && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : ct(e) ? this.k(e) : this._(e);
+    e = M(this, e, t), z(e) ? e === u || e == null || e === "" ? (this._$AH !== u && this._$AR(), this._$AH = u) : e !== this._$AH && e !== R && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : ct(e) ? this.k(e) : this._(e);
   }
   O(e) {
     return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -423,11 +423,11 @@ class W {
     this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
   }
   _(e) {
-    this._$AH !== u && j(this._$AH) ? this._$AA.nextSibling.data = e : this.T(S.createTextNode(e)), this._$AH = e;
+    this._$AH !== u && z(this._$AH) ? this._$AA.nextSibling.data = e : this.T(S.createTextNode(e)), this._$AH = e;
   }
   $(e) {
     var o;
-    const { values: t, _$litType$: i } = e, s = typeof i == "number" ? this._$AC(e) : (i.el === void 0 && (i.el = z.createElement(Ye(i.h, i.h[0]), this.options)), i);
+    const { values: t, _$litType$: i } = e, s = typeof i == "number" ? this._$AC(e) : (i.el === void 0 && (i.el = j.createElement(Ye(i.h, i.h[0]), this.options)), i);
     if (((o = this._$AH) == null ? void 0 : o._$AD) === s) this._$AH.p(t);
     else {
       const n = new gt(s, this), l = n.u(this.options);
@@ -436,7 +436,7 @@ class W {
   }
   _$AC(e) {
     let t = He.get(e.strings);
-    return t === void 0 && He.set(e.strings, t = new z(e)), t;
+    return t === void 0 && He.set(e.strings, t = new j(e)), t;
   }
   k(e) {
     me(this._$AH) || (this._$AH = [], this._$AR());
@@ -470,11 +470,11 @@ class Q {
   _$AI(e, t = this, i, s) {
     const o = this.strings;
     let n = !1;
-    if (o === void 0) e = M(this, e, t, 0), n = !j(e) || e !== this._$AH && e !== R, n && (this._$AH = e);
+    if (o === void 0) e = M(this, e, t, 0), n = !z(e) || e !== this._$AH && e !== R, n && (this._$AH = e);
     else {
       const l = e;
       let a, h;
-      for (e = o[0], a = 0; a < o.length - 1; a++) h = M(this, l[i + a], t, a), h === R && (h = this._$AH[a]), n || (n = !j(h) || h !== this._$AH[a]), h === u ? e = u : e !== u && (e += (h != null ? h : "") + o[a + 1]), this._$AH[a] = h;
+      for (e = o[0], a = 0; a < o.length - 1; a++) h = M(this, l[i + a], t, a), h === R && (h = this._$AH[a]), n || (n = !z(h) || h !== this._$AH[a]), h === u ? e = u : e !== u && (e += (h != null ? h : "") + o[a + 1]), this._$AH[a] = h;
     }
     n && !s && this.j(e);
   }
@@ -526,7 +526,7 @@ class mt {
 }
 const se = I.litHtmlPolyfillSupport;
 var Ie;
-se == null || se(z, W), ((Ie = I.litHtmlVersions) != null ? Ie : I.litHtmlVersions = []).push("3.3.0");
+se == null || se(j, W), ((Ie = I.litHtmlVersions) != null ? Ie : I.litHtmlVersions = []).push("3.3.0");
 const $t = (r, e, t) => {
   var o, n;
   const i = (o = t == null ? void 0 : t.renderBefore) != null ? o : e;
@@ -612,9 +612,10 @@ class yt extends P {
       _config: { type: Object }
     };
   }
+  // Keep structure
   setConfig(t) {
     console.log("[Editor] setConfig called with:", t), this._config = T({}, t), this._initialized ? this.loadEditorValues() : this.updateComplete.then(() => {
-      this._initialized ? this.loadEditorValues() : this.firstUpdated();
+      this._initialized || this.firstUpdated(), this.loadEditorValues();
     });
   }
   set hass(t) {
@@ -623,9 +624,8 @@ class yt extends P {
       s && (s.hass = this._hass);
     });
   }
-  // Use firstUpdated for setup that depends on shadow DOM
-  firstUpdated(t) {
-    super.firstUpdated(t), this._initialized || (this._storeElementReferences(), this._attachInputListeners(), this.loadEditorValues(), this._initialized = !0, console.log("[Editor] Initialized via firstUpdated."));
+  firstUpdated() {
+    this._initialized || (this._storeElementReferences(), this._attachInputListeners(), this._initialized = !0, console.log("[Editor] Initialized via firstUpdated."));
   }
   _storeElementReferences() {
     const t = this.shadowRoot;
@@ -633,10 +633,7 @@ class yt extends P {
     this._elements.pickers.entity = t.querySelector("#entity"), this._elements.pickers.min_entity = t.querySelector("#min_entity"), this._elements.pickers.max_entity = t.querySelector("#max_entity"), this._elements.inputs.name = t.querySelector("#name"), this._elements.inputs.gauge_min = t.querySelector("#gauge_min"), this._elements.inputs.gauge_max = t.querySelector("#gauge_max"), this._elements.inputs.static_low_threshold = t.querySelector("#static_low_threshold"), this._elements.inputs.static_high_threshold = t.querySelector("#static_high_threshold");
     const i = ["extreme_low", "low", "good", "high", "extreme_high"];
     this._elements.colors = {}, i.forEach((s) => {
-      this._elements.colors[s] = {
-        picker: t.querySelector(`#${s}_picker`)
-        // Reference the picker
-      };
+      this._elements.colors[s] = { picker: t.querySelector(`#${s}_picker`) };
     }), console.log("[Editor] Elements stored:", this._elements);
   }
   _attachInputListeners() {
@@ -649,8 +646,8 @@ class yt extends P {
   }
   loadEditorValues() {
     var i, s;
-    if (!this._config || !this.shadowRoot || !this._elements) {
-      console.warn("[Editor] Cannot load values yet.");
+    if (!this._config || !this.shadowRoot || !this._elements || !this._initialized) {
+      console.warn("[Editor] Cannot load values - editor not fully ready.");
       return;
     }
     console.log("[Editor] Loading editor values from:", this._config);
@@ -712,7 +709,7 @@ class yt extends P {
       `;
   }
   static get styles() {
-    return ze`
+    return je`
         /* ... Keep styles as before ... */
         .card-config { display: flex; flex-direction: column; gap: 12px; }
         ha-entity-picker, ha-textfield, ha-formfield { display: block; }
@@ -749,11 +746,6 @@ class vt extends P {
       return console.log(`VPD Gauge (${t.entity}): MinT=${y}, MaxT=${v}, Segments=`, m), m;
     });
   }
-  // --- PASTE THE ENTIRE VpdGaugeCard CLASS CODE HERE ---
-  // Including: static get properties, setConfig (without needle),
-  // _calculateSegments (final correct version), render (without needle),
-  // getCardSize, static getConfigElement, static getStubConfig, static get styles
-  // ------------------------------------------------------
   static get properties() {
     return { hass: { type: Object }, config: { type: Object } };
   }
@@ -784,9 +776,14 @@ class vt extends P {
     return console.log("StubConfig Found: VPD=", o, "Min=", l, "Max=", a), { type: "custom:vpd-gauge-card", entity: o || "", min_entity: l || "", max_entity: a || "", name: n ? `${n.replace(/_/g, " ")} VPD Gauge` : "VPD Gauge" };
   }
   static get styles() {
-    return ze`ha-card{height:100%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.card-content{display:flex;justify-content:center;align-items:center;padding:16px;flex-grow:1}ha-gauge{width:100%;max-width:250px;--gauge-color:var(--primary-text-color)}.warning{padding:16px;text-align:center;color:var(--error-color)}`;
+    return je`ha-card{height:100%;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.card-content{display:flex;justify-content:center;align-items:center;padding:16px;flex-grow:1}ha-gauge{width:100%;max-width:250px;--gauge-color:var(--primary-text-color)}.warning{padding:16px;text-align:center;color:var(--error-color)}`;
   }
 }
 customElements.get("vpd-gauge-card") || (customElements.define("vpd-gauge-card", vt), console.info("%c VPD-GAUGE-CARD %c Loaded ", "color: white; background: #039be5; font-weight: 700;", "color: #039be5; background: white; font-weight: 700;"));
-window.customCards && !window.customCards.some((r) => r.type === "vpd-gauge-card") && window.customCards.push({ type: "vpd-gauge-card", name: "VPD Gauge Card", description: "A gauge card with dynamic segments based on min/max threshold entities.", preview: !0 });
+window.customCards && !window.customCards.some((r) => r.type === "vpd-gauge-card") && window.customCards.push({
+  type: "vpd-gauge-card",
+  name: "VPD Gauge Card",
+  description: "A gauge card with dynamic segments based on min/max threshold entities.",
+  preview: !0
+});
 console.log("VPD Gauge Card + Editor Script Loaded Successfully");
