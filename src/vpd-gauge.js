@@ -536,40 +536,48 @@ class VpdGaugeCardEditor extends LitElement {
           ></ha-textfield>
         </div>
 
-        <h3>Segment Colors</h3>
-        <div class="color-grid">
-          <label>Extreme Low:</label>
-          <ha-textfield
-            .value=${colorExtremeLow}
-            .configValue=${CONF_COLOR_EXTREME_LOW}
-            @input=${this._valueChanged}
-          ></ha-textfield>
-          <label>Low:</label>
-          <ha-textfield
-            .value=${colorLow}
-            .configValue=${CONF_COLOR_LOW}
-            @input=${this._valueChanged}
-          ></ha-textfield>
-          <label>Good:</label>
-          <ha-textfield
-            .value=${colorGood}
-            .configValue=${CONF_COLOR_GOOD}
-            @input=${this._valueChanged}
-          ></ha-textfield>
-          <label>High:</label>
-          <ha-textfield
-            .value=${colorHigh}
-            .configValue=${CONF_COLOR_HIGH}
-            @input=${this._valueChanged}
-          ></ha-textfield>
-          <label>Extreme High:</label>
-          <ha-textfield
-            .value=${colorExtremeHigh}
-            .configValue=${CONF_COLOR_EXTREME_HIGH}
-            @input=${this._valueChanged}
-          ></ha-textfield>
-        </div>
-        <!-- Consider using ha-color-picker for a better UX, but textfield is simpler -->
+         <h3>Segment Colors</h3>
+         <div class="color-grid">
+            <label>Extreme Low:</label>
+            <ha-color-picker
+              .value=${colorExtremeLow}
+              .dataset=${{ configValue: CONF_COLOR_EXTREME_LOW }}
+              @color-changed=${this._colorChanged} <!-- Use color-changed event -->
+              id="extreme_low_picker"
+            ></ha-color-picker>
+
+            <label>Low:</label>
+            <ha-color-picker
+              .value=${colorLow}
+              .dataset=${{ configValue: CONF_COLOR_LOW }}
+              @color-changed=${this._colorChanged}
+              id="low_picker"
+            ></ha-color-picker>
+
+            <label>Good:</label>
+            <ha-color-picker
+              .value=${colorGood}
+              .dataset=${{ configValue: CONF_COLOR_GOOD }}
+              @color-changed=${this._colorChanged}
+              id="good_picker"
+            ></ha-color-picker>
+
+            <label>High:</label>
+            <ha-color-picker
+              .value=${colorHigh}
+              .dataset=${{ configValue: CONF_COLOR_HIGH }}
+              @color-changed=${this._colorChanged}
+              id="high_picker"
+            ></ha-color-picker>
+
+            <label>Extreme High:</label>
+            <ha-color-picker
+              .value=${colorExtremeHigh}
+              .dataset=${{ configValue: CONF_COLOR_EXTREME_HIGH }}
+              @color-changed=${this._colorChanged}
+              id="extreme_high_picker"
+            ></ha-color-picker>
+         </div>
       </div>
     `;
   }
