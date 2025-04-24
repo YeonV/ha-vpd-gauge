@@ -88,7 +88,7 @@ const { is: it, defineProperty: st, getOwnPropertyDescriptor: nt, getOwnProperty
 } }, We = (r, e) => !it(r, e), xe = { attribute: !0, type: String, converter: le, reflect: !1, useDefault: !1, hasChanged: We };
 var De, Ve;
 (De = Symbol.metadata) != null || (Symbol.metadata = Symbol("metadata")), (Ve = A.litPropertyMetadata) != null || (A.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
-let N = class extends HTMLElement {
+let H = class extends HTMLElement {
   static addInitializer(e) {
     var t;
     this._$Ei(), ((t = this.l) != null ? t : this.l = []).push(e);
@@ -295,7 +295,7 @@ let N = class extends HTMLElement {
   }
 };
 var Ge;
-N.elementStyles = [], N.shadowRootOptions = { mode: "open" }, N[G("elementProperties")] = /* @__PURE__ */ new Map(), N[G("finalized")] = /* @__PURE__ */ new Map(), te == null || te({ ReactiveElement: N }), ((Ge = A.reactiveElementVersions) != null ? Ge : A.reactiveElementVersions = []).push("2.1.0");
+H.elementStyles = [], H.shadowRootOptions = { mode: "open" }, H[G("elementProperties")] = /* @__PURE__ */ new Map(), H[G("finalized")] = /* @__PURE__ */ new Map(), te == null || te({ ReactiveElement: H }), ((Ge = A.reactiveElementVersions) != null ? Ge : A.reactiveElementVersions = []).push("2.1.0");
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -303,7 +303,7 @@ N.elementStyles = [], N.shadowRootOptions = { mode: "open" }, N[G("elementProper
  */
 const I = globalThis, X = I.trustedTypes, Se = X ? X.createPolicy("lit-html", { createHTML: (r) => r }) : void 0, Be = "$lit$", E = `lit$${Math.random().toFixed(9).slice(2)}$`, Ke = "?" + E, lt = `<${Ke}>`, S = document, q = () => S.createComment(""), z = (r) => r === null || typeof r != "object" && typeof r != "function", me = Array.isArray, ct = (r) => me(r) || typeof (r == null ? void 0 : r[Symbol.iterator]) == "function", ie = `[ 	
 \f\r]`, V = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Oe = /-->/g, Te = />/g, C = RegExp(`>|${ie}(?:([^\\s"'>=/]+)(${ie}*=${ie}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), Le = /'/g, Ne = /"/g, Xe = /^(?:script|style|textarea|title)$/i, dt = (r) => (e, ...t) => ({ _$litType$: r, strings: e, values: t }), w = dt(1), R = Symbol.for("lit-noChange"), u = Symbol.for("lit-nothing"), He = /* @__PURE__ */ new WeakMap(), b = S.createTreeWalker(S, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), Le = /'/g, He = /"/g, Xe = /^(?:script|style|textarea|title)$/i, dt = (r) => (e, ...t) => ({ _$litType$: r, strings: e, values: t }), w = dt(1), R = Symbol.for("lit-noChange"), u = Symbol.for("lit-nothing"), Ne = /* @__PURE__ */ new WeakMap(), b = S.createTreeWalker(S, 129);
 function Ye(r, e) {
   if (!me(r) || !r.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return Se !== void 0 ? Se.createHTML(e) : e;
@@ -314,7 +314,7 @@ const ut = (r, e) => {
   for (let l = 0; l < t; l++) {
     const a = r[l];
     let h, c, d = -1, g = 0;
-    for (; g < a.length && (n.lastIndex = g, c = n.exec(a), c !== null); ) g = n.lastIndex, n === V ? c[1] === "!--" ? n = Oe : c[1] !== void 0 ? n = Te : c[2] !== void 0 ? (Xe.test(c[2]) && (s = RegExp("</" + c[2], "g")), n = C) : c[3] !== void 0 && (n = C) : n === C ? c[0] === ">" ? (n = s != null ? s : V, d = -1) : c[1] === void 0 ? d = -2 : (d = n.lastIndex - c[2].length, h = c[1], n = c[3] === void 0 ? C : c[3] === '"' ? Ne : Le) : n === Ne || n === Le ? n = C : n === Oe || n === Te ? n = V : (n = C, s = void 0);
+    for (; g < a.length && (n.lastIndex = g, c = n.exec(a), c !== null); ) g = n.lastIndex, n === V ? c[1] === "!--" ? n = Oe : c[1] !== void 0 ? n = Te : c[2] !== void 0 ? (Xe.test(c[2]) && (s = RegExp("</" + c[2], "g")), n = C) : c[3] !== void 0 && (n = C) : n === C ? c[0] === ">" ? (n = s != null ? s : V, d = -1) : c[1] === void 0 ? d = -2 : (d = n.lastIndex - c[2].length, h = c[1], n = c[3] === void 0 ? C : c[3] === '"' ? He : Le) : n === He || n === Le ? n = C : n === Oe || n === Te ? n = V : (n = C, s = void 0);
     const _ = n === C && r[l + 1].startsWith("/>") ? " " : "";
     o += n === V ? a + lt : d >= 0 ? (i.push(h), a.slice(0, d) + Be + a.slice(d) + E + _) : a + E + (d === -2 ? l : _);
   }
@@ -435,8 +435,8 @@ class W {
     }
   }
   _$AC(e) {
-    let t = He.get(e.strings);
-    return t === void 0 && He.set(e.strings, t = new j(e)), t;
+    let t = Ne.get(e.strings);
+    return t === void 0 && Ne.set(e.strings, t = new j(e)), t;
   }
   k(e) {
     me(this._$AH) || (this._$AH = [], this._$AR());
@@ -543,7 +543,7 @@ const $t = (r, e, t) => {
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const x = globalThis;
-class P extends N {
+class P extends H {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
@@ -574,7 +574,7 @@ const ne = x.litElementPolyfillSupport;
 ne == null || ne({ LitElement: P });
 var qe;
 ((qe = x.litElementVersions) != null ? qe : x.litElementVersions = []).push("4.2.0");
-const $ = "entity", U = "name", oe = "gauge_min", re = "gauge_max", H = "min_entity", k = "max_entity", ke = "color_extreme_low", Pe = "color_low", Ue = "color_good", Re = "color_high", Me = "color_extreme_high", ae = "static_low_threshold", he = "static_high_threshold", ce = "#1c2814", de = "#406f1e", ue = "#689a46", ge = "#406f1e", _e = "#1c2814", Y = 1, J = 1.2, F = 0.8, Z = 1.3;
+const $ = "entity", U = "name", oe = "gauge_min", re = "gauge_max", N = "min_entity", k = "max_entity", ke = "color_extreme_low", Pe = "color_low", Ue = "color_good", Re = "color_high", Me = "color_extreme_high", ae = "static_low_threshold", he = "static_high_threshold", ce = "#1c2814", de = "#406f1e", ue = "#689a46", ge = "#406f1e", _e = "#1c2814", Y = 1, J = 1.2, F = 0.8, Z = 1.3;
 class yt extends P {
   constructor() {
     super(...arguments);
@@ -592,7 +592,7 @@ class yt extends P {
       }
       i.type === "number" ? o = o === "" ? void 0 : parseFloat(o) : i.tagName === "HA-ENTITY-PICKER" && ((l = t.detail) == null ? void 0 : l.value) !== void 0 && (o = t.detail.value);
       const n = T({}, this._config);
-      o === void 0 || o === "" || typeof o == "number" && isNaN(o) ? s !== $ && s !== H && s !== k ? delete n[s] : n[s] = "" : n[s] = o, this._config = n, this.fireConfigChanged();
+      o === void 0 || o === "" || typeof o == "number" && isNaN(o) ? s !== $ && s !== N && s !== k ? delete n[s] : n[s] = "" : n[s] = o, this._config = n, this.fireConfigChanged();
     });
     L(this, "_colorChanged", (t) => {
       if (!this._config) return;
@@ -654,7 +654,7 @@ class yt extends P {
     const t = (o, n, l = "") => {
       o && (o.value = n != null ? n : l);
     };
-    t(this._elements.pickers.entity, this._config[$]), t(this._elements.pickers.min_entity, this._config[H]), t(this._elements.pickers.max_entity, this._config[k]), t(this._elements.inputs.name, this._config[U]), t(this._elements.inputs.gauge_min, this._config[oe], F), t(this._elements.inputs.gauge_max, this._config[re], Z), t(this._elements.inputs.static_low_threshold, this._config[ae], Y), t(this._elements.inputs.static_high_threshold, this._config[he], J);
+    t(this._elements.pickers.entity, this._config[$]), t(this._elements.pickers.min_entity, this._config[N]), t(this._elements.pickers.max_entity, this._config[k]), t(this._elements.inputs.name, this._config[U]), t(this._elements.inputs.gauge_min, this._config[oe], F), t(this._elements.inputs.gauge_max, this._config[re], Z), t(this._elements.inputs.static_low_threshold, this._config[ae], Y), t(this._elements.inputs.static_high_threshold, this._config[he], J);
     for (const o in this._elements.colors) {
       const n = (i = this._elements.colors[o]) == null ? void 0 : i.picker;
       if (n) {
@@ -675,12 +675,12 @@ class yt extends P {
     var O, y, v, D;
     if (!this._hass) return w`Waiting for hass...`;
     if (!this._config) return w`Waiting for config...`;
-    const t = this._config[U] || "", i = this._config[$] || "", s = this._config[H] || "", o = this._config[k] || "", n = (O = this._config[oe]) != null ? O : F, l = (y = this._config[re]) != null ? y : Z, a = (v = this._config[ae]) != null ? v : Y, h = (D = this._config[he]) != null ? D : J, c = this._config[ke] || ce, d = this._config[Pe] || de, g = this._config[Ue] || ue, _ = this._config[Re] || ge, p = this._config[Me] || _e;
+    const t = this._config[U] || "", i = this._config[$] || "", s = this._config[N] || "", o = this._config[k] || "", n = (O = this._config[oe]) != null ? O : F, l = (y = this._config[re]) != null ? y : Z, a = (v = this._config[ae]) != null ? v : Y, h = (D = this._config[he]) != null ? D : J, c = this._config[ke] || ce, d = this._config[Pe] || de, g = this._config[Ue] || ue, _ = this._config[Re] || ge, p = this._config[Me] || _e;
     return w`
         <div class="card-config">
           <h3>Required Entities</h3>
           <ha-entity-picker label="VPD Sensor Entity" .hass=${this._hass} .value=${i} .dataset=${{ configValue: $ }} @value-changed=${this._valueChanged} allow-custom-entity required id="entity"></ha-entity-picker>
-          <ha-entity-picker label="Min Threshold Entity (Number)" .hass=${this._hass} .value=${s} .dataset=${{ configValue: H }} @value-changed=${this._valueChanged} .includeDomains=${["number"]} allow-custom-entity required id="min_entity"></ha-entity-picker>
+          <ha-entity-picker label="Min Threshold Entity (Number)" .hass=${this._hass} .value=${s} .dataset=${{ configValue: N }} @value-changed=${this._valueChanged} .includeDomains=${["number"]} allow-custom-entity required id="min_entity"></ha-entity-picker>
           <ha-entity-picker label="Max Threshold Entity (Number)" .hass=${this._hass} .value=${o} .dataset=${{ configValue: k }} @value-changed=${this._valueChanged} .includeDomains=${["number"]} allow-custom-entity required id="max_entity"></ha-entity-picker>
 
           <h3>Appearance</h3>
@@ -729,7 +729,7 @@ class vt extends P {
     L(this, "_calculateSegments", () => {
       var $e, ye, ve;
       const t = this.config, i = this.hass;
-      if (!i || !t || !t[H] || !t[k])
+      if (!i || !t || !t[N] || !t[k])
         return console.warn("VPD Gauge: Data missing for segment calc."), [];
       const s = ($e = t.gauge_min) != null ? $e : F, o = t.min_entity, n = t.max_entity, l = (ye = t.static_low_threshold) != null ? ye : Y, a = (ve = t.static_high_threshold) != null ? ve : J, h = t.color_extreme_low || ce, c = t.color_low || de, d = t.color_good || ue, g = t.color_high || ge, _ = t.color_extreme_high || _e, p = i.states[o], O = i.states[n];
       let y = l;
@@ -751,10 +751,10 @@ class vt extends P {
   }
   setConfig(t) {
     if (!t || !t[$]) throw new Error("Entity is required");
-    if (!t[H]) throw new Error("Min entity is required");
+    if (!t[N]) throw new Error("Min entity is required");
     if (!t[k]) throw new Error("Max entity is required");
     const i = { gauge_min: F, gauge_max: Z, static_low_threshold: Y, static_high_threshold: J, color_extreme_low: ce, color_low: de, color_good: ue, color_high: ge, color_extreme_high: _e, name: "" };
-    this.config = T(T({}, i), t), delete this.config[CONF_NEEDLE], console.log("VPD Gauge Card Config Set:", this.config), this.hass && this.requestUpdate();
+    this.config = T(T({}, i), t), console.log("VPD Gauge Card Config Set:", this.config), this.hass && this.requestUpdate();
   }
   render() {
     var o, n;
