@@ -322,27 +322,276 @@ class VpdGaugeCard extends LitElement {
 // ======================================================================
 
 // Define the custom element, ensuring it's only defined once
-if (!customElements.get('vpd-gauge-card')) {
-  customElements.define('vpd-gauge-card', VpdGaugeCard);
+if (!customElements.get("vpd-gauge-card")) {
+  customElements.define("vpd-gauge-card", VpdGaugeCard);
   // Log registration only if it actually happens
-  console.info('%c VPD-GAUGE-CARD %c Loaded ',
-      'color: white; background: #039be5; font-weight: 700;',
-      'color: #039be5; background: white; font-weight: 700;'
+  console.info(
+    "%c VPD-GAUGE-CARD %c Loaded ",
+    "color: white; background: #039be5; font-weight: 700;",
+    "color: #039be5; background: white; font-weight: 700;"
   );
 } else {
   console.warn("Attempted to redefine vpd-gauge-card. Skipping.");
 }
 
-
 // Add card to Lovelace custom card picker (if not already present)
 // This should ideally only run once as well, though less critical than define
-if (window.customCards && !window.customCards.some(card => card.type === 'vpd-gauge-card')) {
+if (
+  window.customCards &&
+  !window.customCards.some((card) => card.type === "vpd-gauge-card")
+) {
   window.customCards = window.customCards || [];
   window.customCards.push({
     type: "vpd-gauge-card", // Matches customElements.define
     name: "VPD Gauge Card",
-    description: "A gauge card with dynamic segments based on min/max threshold entities.",
+    description:
+      "A gauge card with dynamic segments based on min/max threshold entities.",
     preview: true, // Enable preview in card picker
     // documentationURL: "URL_TO_YOUR_REPO_OR_DOCS" // Optional
   });
+}
+
+class VpdGaugeCardEditor extends LitElement {
+  static get properties() {
+    return {
+      hass: {}, // Home Assistant object
+      _config: {}, // Internal copy of the configuration
+    };
+  }
+
+  setConfig(config) {
+    // Store a copy of the configuration
+    this._config = { ...config }; // Create a shallow copy
+  }
+
+  // Helper function to handle changes in form elements
+  _valueChanged(ev) {
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const target = ev.target;
+    let value = target.value;
+
+    // Handle specific element types
+    if (target.type === "checkbox" && target.checked !== undefined) {
+      value = target.checked;
+    }
+    if (target.type === "number") {
+      value = parseFloat(value); // Ensure numbers are stored as numbers
+    }
+
+    // Update the internal config copy
+    const newConfig = {
+      ...this._config,
+      [target.configValue]: value, // Use configValue attribute to link element to config key
+    };
+
+    // Fire event to notify Lovelace UI that config has changed
+    const event = new Event("config-changed", {
+      bubbles: true,
+      composed: true,
+    });
+    event.detail = { config: newConfig };
+    this.dispatchEvent(event);
+  }
+
+  render() {
+    if (!this.hass || !this._config) {
+      return html``;
+    }
+
+    // Pre-populate values for the form fields from the internal config copy
+    const name = this._config[CONF_NAME] || "";
+    const entity = this._config[CONF_ENTITY] || "";
+    const minEntity = this._config[CONF_MIN_ENTITY] || "";
+    const maxEntity = this._config[CONF_MAX_ENTITY] || "";
+    const needle = this._config[CONF_NEEDLE] !== false; // Default true if undefined
+    const gaugeMin = this._config[CONF_GAUGE_MIN] ?? DEFAULT_GAUGE_MIN;
+    const gaugeMax = this._config[CONF_GAUGE_MAX] ?? DEFAULT_GAUGE_MAX;
+    const staticLow =
+      this._config[CONF_STATIC_LOW_THRESHOLD] ?? DEFAULT_STATIC_LOW_THRESHOLD;
+    const staticHigh =
+      this._config[CONF_STATIC_HIGH_THRESHOLD] ?? DEFAULT_STATIC_HIGH_THRESHOLD;
+    const colorExtremeLow =
+      this._config[CONF_COLOR_EXTREME_LOW] || DEFAULT_COLOR_EXTREME_LOW;
+    const colorLow = this._config[CONF_COLOR_LOW] || DEFAULT_COLOR_LOW;
+    const colorGood = this._config[CONF_COLOR_GOOD] || DEFAULT_COLOR_GOOD;
+    const colorHigh = this._config[CONF_COLOR_HIGH] || DEFAULT_COLOR_HIGH;
+    const colorExtremeHigh =
+      this._config[CONF_COLOR_EXTREME_HIGH] || DEFAULT_COLOR_EXTREME_HIGH;
+
+    return html`
+      <div class="card-config">
+        <h3>Required Entities</h3>
+        <ha-entity-picker
+          label="VPD Sensor Entity"
+          .hass=${this.hass}
+          .value=${entity}
+          .configValue=${CONF_ENTITY}
+          @value-changed=${this._valueChanged}
+          allow-custom-entity
+          required
+        ></ha-entity-picker>
+        <ha-entity-picker
+          label="Min Threshold Entity (Number)"
+          .hass=${this.hass}
+          .value=${minEntity}
+          .configValue=${CONF_MIN_ENTITY}
+          @value-changed=${this._valueChanged}
+          .includeDomains=${["number"]}
+          allow-custom-entity
+          required
+        ></ha-entity-picker>
+        <ha-entity-picker
+          label="Max Threshold Entity (Number)"
+          .hass=${this.hass}
+          .value=${maxEntity}
+          .configValue=${CONF_MAX_ENTITY}
+          @value-changed=${this._valueChanged}
+          .includeDomains=${["number"]}
+          allow-custom-entity
+          required
+        ></ha-entity-picker>
+
+        <h3>Appearance</h3>
+        <ha-textfield
+          label="Name (Optional)"
+          .value=${name}
+          .configValue=${CONF_NAME}
+          @input=${this._valueChanged}
+        ></ha-textfield>
+        <ha-formfield label="Show Needle">
+          <ha-switch
+            .checked=${needle}
+            .configValue=${CONF_NEEDLE}
+            @change=${this._valueChanged}
+          ></ha-switch>
+        </ha-formfield>
+
+        <h3>Gauge Range & Static Thresholds</h3>
+        <div class="side-by-side">
+          <ha-textfield
+            label="Gauge Min Value"
+            type="number"
+            .value=${gaugeMin}
+            .configValue=${CONF_GAUGE_MIN}
+            @input=${this._valueChanged}
+            step="0.01"
+          ></ha-textfield>
+          <ha-textfield
+            label="Gauge Max Value"
+            type="number"
+            .value=${gaugeMax}
+            .configValue=${CONF_GAUGE_MAX}
+            @input=${this._valueChanged}
+            step="0.01"
+          ></ha-textfield>
+        </div>
+        <div class="side-by-side">
+          <ha-textfield
+            label="Static Low Threshold"
+            type="number"
+            .value=${staticLow}
+            .configValue=${CONF_STATIC_LOW_THRESHOLD}
+            @input=${this._valueChanged}
+            step="0.01"
+            title="Segment color changes from Extreme Low to Low at this value"
+          ></ha-textfield>
+          <ha-textfield
+            label="Static High Threshold"
+            type="number"
+            .value=${staticHigh}
+            .configValue=${CONF_STATIC_HIGH_THRESHOLD}
+            @input=${this._valueChanged}
+            step="0.01"
+            title="Segment color changes from High to Extreme High at this value"
+          ></ha-textfield>
+        </div>
+
+        <h3>Segment Colors</h3>
+        <div class="color-grid">
+          <label>Extreme Low:</label>
+          <ha-textfield
+            .value=${colorExtremeLow}
+            .configValue=${CONF_COLOR_EXTREME_LOW}
+            @input=${this._valueChanged}
+          ></ha-textfield>
+          <label>Low:</label>
+          <ha-textfield
+            .value=${colorLow}
+            .configValue=${CONF_COLOR_LOW}
+            @input=${this._valueChanged}
+          ></ha-textfield>
+          <label>Good:</label>
+          <ha-textfield
+            .value=${colorGood}
+            .configValue=${CONF_COLOR_GOOD}
+            @input=${this._valueChanged}
+          ></ha-textfield>
+          <label>High:</label>
+          <ha-textfield
+            .value=${colorHigh}
+            .configValue=${CONF_COLOR_HIGH}
+            @input=${this._valueChanged}
+          ></ha-textfield>
+          <label>Extreme High:</label>
+          <ha-textfield
+            .value=${colorExtremeHigh}
+            .configValue=${CONF_COLOR_EXTREME_HIGH}
+            @input=${this._valueChanged}
+          ></ha-textfield>
+        </div>
+        <!-- Consider using ha-color-picker for a better UX, but textfield is simpler -->
+      </div>
+    `;
+  }
+
+  static get styles() {
+    return css`
+      .card-config {
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* Add some spacing between elements */
+      }
+      ha-entity-picker,
+      ha-textfield,
+      ha-formfield {
+        display: block; /* Ensure they take full width */
+      }
+      ha-switch {
+        padding-top: 10px; /* Align switch better */
+      }
+      .side-by-side {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .color-grid {
+        display: grid;
+        grid-template-columns: auto 1fr; /* Label takes auto width, input takes rest */
+        gap: 8px 12px; /* Row gap, Column gap */
+        align-items: center;
+      }
+      h3 {
+        margin-bottom: 0;
+        margin-top: 8px;
+      }
+      label {
+        text-align: right;
+      }
+    `;
+  }
+}
+
+// ======================================================================
+// == Editor Definition & Registration                                 ==
+// ======================================================================
+
+// Define the custom element for the editor, ensuring it's only defined once
+if (!customElements.get("vpd-gauge-card-editor")) {
+  customElements.define("vpd-gauge-card-editor", VpdGaugeCardEditor);
+  // Optional: Add a console log for editor registration if needed for debugging
+  // console.info('VPD Gauge Card Editor defined.');
+} else {
+  console.warn("Attempted to redefine vpd-gauge-card-editor. Skipping.");
 }
