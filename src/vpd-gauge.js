@@ -7,11 +7,11 @@ import { LitElement, html, css } from 'lit';
 // as it makes dependencies explicit and helps bundlers.
 // If these cause build errors with Vite/Rollup, you might need specific plugins
 // or remove them and rely on global availability.
-import "home-assistant-frontend/src/components/ha-formfield.js";
-import "home-assistant-frontend/src/components/ha-switch.js";
-import "home-assistant-frontend/src/components/ha-textfield.js";
-import "home-assistant-frontend/src/components/entity/ha-entity-picker.js";
-import "home-assistant-frontend/src/components/ha-color-picker.js"; // Import color picker
+// import "home-assistant-frontend/src/components/ha-formfield.js";
+// import "home-assistant-frontend/src/components/ha-switch.js";
+// import "home-assistant-frontend/src/components/ha-textfield.js";
+// import "home-assistant-frontend/src/components/entity/ha-entity-picker.js";
+// import "home-assistant-frontend/src/components/ha-color-picker.js"; // Import color picker
 // ---------------------------------------------
 
 // --- Import HA Gauge (Attempt - May need path adjustment or removal) ---
