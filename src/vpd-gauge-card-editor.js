@@ -45,13 +45,9 @@ import { LitElement, html, css } from 'lit';
       };
     }
   
-    setConfig(config) { // <<< IS THIS METHOD PRESENT AND SPELLED CORRECTLY?
-      console.log("Editor setConfig called with:", config); // Add log here
-      this._config = { ...config };
-      // Maybe call loadEditorValues explicitly if needed after first set?
-      if (this._initialized) {
-          this.loadEditorValues();
-      }
+    setConfig(config) {
+      // Store a copy of the configuration
+      this._config = { ...config }; // Create a shallow copy
     }
   
     // Helper function to handle changes in form elements
@@ -98,17 +94,14 @@ import { LitElement, html, css } from 'lit';
       const needle = this._config[CONF_NEEDLE] !== false; // Default true if undefined
       const gaugeMin = this._config[CONF_GAUGE_MIN] ?? DEFAULT_GAUGE_MIN;
       const gaugeMax = this._config[CONF_GAUGE_MAX] ?? DEFAULT_GAUGE_MAX;
-      const staticLow =
-        this._config[CONF_STATIC_LOW_THRESHOLD] ?? DEFAULT_STATIC_LOW_THRESHOLD;
-      const staticHigh =
-        this._config[CONF_STATIC_HIGH_THRESHOLD] ?? DEFAULT_STATIC_HIGH_THRESHOLD;
-      const colorExtremeLow =
-        this._config[CONF_COLOR_EXTREME_LOW] || DEFAULT_COLOR_EXTREME_LOW;
+      const staticLow = this._config[CONF_STATIC_LOW_THRESHOLD] ?? DEFAULT_STATIC_LOW_THRESHOLD;
+      const staticHigh = this._config[CONF_STATIC_HIGH_THRESHOLD] ?? DEFAULT_STATIC_HIGH_THRESHOLD;
+      const colorExtremeLow = this._config[CONF_COLOR_EXTREME_LOW] || DEFAULT_COLOR_EXTREME_LOW;
       const colorLow = this._config[CONF_COLOR_LOW] || DEFAULT_COLOR_LOW;
       const colorGood = this._config[CONF_COLOR_GOOD] || DEFAULT_COLOR_GOOD;
       const colorHigh = this._config[CONF_COLOR_HIGH] || DEFAULT_COLOR_HIGH;
-      const colorExtremeHigh =
-        this._config[CONF_COLOR_EXTREME_HIGH] || DEFAULT_COLOR_EXTREME_HIGH;
+      const colorExtremeHigh = this._config[CONF_COLOR_EXTREME_HIGH] || DEFAULT_COLOR_EXTREME_HIGH;
+  
   
       return html`
         <div class="card-config">
@@ -151,87 +144,68 @@ import { LitElement, html, css } from 'lit';
             @input=${this._valueChanged}
           ></ha-textfield>
           <ha-formfield label="Show Needle">
-            <ha-switch
+              <ha-switch
               .checked=${needle}
               .configValue=${CONF_NEEDLE}
               @change=${this._valueChanged}
-            ></ha-switch>
+              ></ha-switch>
           </ha-formfield>
   
           <h3>Gauge Range & Static Thresholds</h3>
           <div class="side-by-side">
-            <ha-textfield
-              label="Gauge Min Value"
-              type="number"
-              .value=${gaugeMin}
-              .configValue=${CONF_GAUGE_MIN}
-              @input=${this._valueChanged}
-              step="0.01"
-            ></ha-textfield>
-            <ha-textfield
-              label="Gauge Max Value"
-              type="number"
-              .value=${gaugeMax}
-              .configValue=${CONF_GAUGE_MAX}
-              @input=${this._valueChanged}
-              step="0.01"
-            ></ha-textfield>
+              <ha-textfield
+                  label="Gauge Min Value"
+                  type="number"
+                  .value=${gaugeMin}
+                  .configValue=${CONF_GAUGE_MIN}
+                  @input=${this._valueChanged}
+                  step="0.01"
+              ></ha-textfield>
+              <ha-textfield
+                  label="Gauge Max Value"
+                  type="number"
+                  .value=${gaugeMax}
+                  .configValue=${CONF_GAUGE_MAX}
+                  @input=${this._valueChanged}
+                  step="0.01"
+              ></ha-textfield>
           </div>
-          <div class="side-by-side">
-            <ha-textfield
-              label="Static Low Threshold"
-              type="number"
-              .value=${staticLow}
-              .configValue=${CONF_STATIC_LOW_THRESHOLD}
-              @input=${this._valueChanged}
-              step="0.01"
-              title="Segment color changes from Extreme Low to Low at this value"
-            ></ha-textfield>
-            <ha-textfield
-              label="Static High Threshold"
-              type="number"
-              .value=${staticHigh}
-              .configValue=${CONF_STATIC_HIGH_THRESHOLD}
-              @input=${this._valueChanged}
-              step="0.01"
-              title="Segment color changes from High to Extreme High at this value"
-            ></ha-textfield>
+           <div class="side-by-side">
+              <ha-textfield
+                  label="Static Low Threshold"
+                  type="number"
+                  .value=${staticLow}
+                  .configValue=${CONF_STATIC_LOW_THRESHOLD}
+                  @input=${this._valueChanged}
+                  step="0.01"
+                  title="Segment color changes from Extreme Low to Low at this value"
+              ></ha-textfield>
+              <ha-textfield
+                  label="Static High Threshold"
+                  type="number"
+                  .value=${staticHigh}
+                  .configValue=${CONF_STATIC_HIGH_THRESHOLD}
+                  @input=${this._valueChanged}
+                  step="0.01"
+                  title="Segment color changes from High to Extreme High at this value"
+              ></ha-textfield>
           </div>
   
-          <h3>Segment Colors</h3>
-          <div class="color-grid">
-            <label>Extreme Low:</label>
-            <ha-textfield
-              .value=${colorExtremeLow}
-              .configValue=${CONF_COLOR_EXTREME_LOW}
-              @input=${this._valueChanged}
-            ></ha-textfield>
-            <label>Low:</label>
-            <ha-textfield
-              .value=${colorLow}
-              .configValue=${CONF_COLOR_LOW}
-              @input=${this._valueChanged}
-            ></ha-textfield>
-            <label>Good:</label>
-            <ha-textfield
-              .value=${colorGood}
-              .configValue=${CONF_COLOR_GOOD}
-              @input=${this._valueChanged}
-            ></ha-textfield>
-            <label>High:</label>
-            <ha-textfield
-              .value=${colorHigh}
-              .configValue=${CONF_COLOR_HIGH}
-              @input=${this._valueChanged}
-            ></ha-textfield>
-            <label>Extreme High:</label>
-            <ha-textfield
-              .value=${colorExtremeHigh}
-              .configValue=${CONF_COLOR_EXTREME_HIGH}
-              @input=${this._valueChanged}
-            ></ha-textfield>
-          </div>
-          <!-- Consider using ha-color-picker for a better UX, but textfield is simpler -->
+           <h3>Segment Colors</h3>
+           <div class="color-grid">
+              <label>Extreme Low:</label>
+              <ha-textfield .value=${colorExtremeLow} .configValue=${CONF_COLOR_EXTREME_LOW} @input=${this._valueChanged}></ha-textfield>
+              <label>Low:</label>
+              <ha-textfield .value=${colorLow} .configValue=${CONF_COLOR_LOW} @input=${this._valueChanged}></ha-textfield>
+              <label>Good:</label>
+              <ha-textfield .value=${colorGood} .configValue=${CONF_COLOR_GOOD} @input=${this._valueChanged}></ha-textfield>
+              <label>High:</label>
+              <ha-textfield .value=${colorHigh} .configValue=${CONF_COLOR_HIGH} @input=${this._valueChanged}></ha-textfield>
+              <label>Extreme High:</label>
+              <ha-textfield .value=${colorExtremeHigh} .configValue=${CONF_COLOR_EXTREME_HIGH} @input=${this._valueChanged}></ha-textfield>
+           </div>
+           <!-- Consider using ha-color-picker for a better UX, but textfield is simpler -->
+  
         </div>
       `;
     }
@@ -248,7 +222,7 @@ import { LitElement, html, css } from 'lit';
         ha-formfield {
           display: block; /* Ensure they take full width */
         }
-        ha-switch {
+         ha-switch {
           padding-top: 10px; /* Align switch better */
         }
         .side-by-side {
@@ -257,17 +231,17 @@ import { LitElement, html, css } from 'lit';
           gap: 12px;
         }
         .color-grid {
-          display: grid;
-          grid-template-columns: auto 1fr; /* Label takes auto width, input takes rest */
-          gap: 8px 12px; /* Row gap, Column gap */
-          align-items: center;
+           display: grid;
+           grid-template-columns: auto 1fr; /* Label takes auto width, input takes rest */
+           gap: 8px 12px; /* Row gap, Column gap */
+           align-items: center;
         }
         h3 {
-          margin-bottom: 0;
-          margin-top: 8px;
+            margin-bottom: 0;
+            margin-top: 8px;
         }
         label {
-          text-align: right;
+            text-align: right;
         }
       `;
     }
